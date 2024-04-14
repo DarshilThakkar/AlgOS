@@ -1,0 +1,49 @@
+/* GanttChart.css */
+.gantt-chart {
+  margin-bottom: 20px;
+}
+
+.chart {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.process {
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.labels {
+  display: flex;
+}
+
+.label {
+  position: absolute;
+  bottom: -20px;
+}
+
+.table-section {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background-color: #007bff;
+  color: #fff;
+}

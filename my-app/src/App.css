@@ -1,0 +1,101 @@
+/* App.css */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.content {
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  max-height: auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: color 0.3s ease;
+}
+
+.dark-mode {
+  background-color: #222;
+}
+
+.dark-mode .content {
+  color: #333; /* Set text color to white in dark mode */
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.input-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.input-section input[type="text"] {
+  width: 100px;
+  padding: 8px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.input-section button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dropdown-section {
+  margin-bottom: 20px;
+}
+
+.dropdown-section select,
+.dropdown-section input[type="number"] {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.action-buttons {
+  margin-bottom: 20px;
+}
+
+.action-buttons button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.gantt-chart-section {
+  margin-top: 20px;
+}
+
+.dark-mode-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dark-mode-button img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Add more styles as needed */
