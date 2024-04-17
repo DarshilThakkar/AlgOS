@@ -1,0 +1,51 @@
+/* ProcessChart.css */
+.process-chart {
+    margin-top: 20px;
+  }
+  
+  .process-chart h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .pchart {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 4px;
+  }
+  
+  .timeline {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  
+  .time {
+    text-align: center;
+    padding: 0.5em;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .process-bar {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.5em;
+    border-radius: 4px;
+  }
+  /* ProcessChart.css */
+.process-chart {
+    color: white;
+  }
+  
+  .process-chart svg {
+    overflow: visible; /* Ensure axes are visible even if overflow is hidden */
+  }
+  
+  .process-chart line {
+    stroke: white;
+  }
+  
+  .process-chart text {
+    fill: white;
+  }
+  
+  

@@ -1,6 +1,7 @@
 // App.js
 import React, { useState, useRef, useEffect } from 'react';
 import GanttChart from './GanttChart';
+import ProcessChart from './ProcessChart';
 import './App.css';
 
 const App = () => {
@@ -283,6 +284,12 @@ const App = () => {
         <div className="gantt-chart-section">
           {scheduleResult.length > 0 && <GanttChart data={scheduleResult} />}
         </div>
+        {scheduleResult.length > 0 && (
+          <div className="process-chart-section">
+            <h2>Process Allocation Chart</h2>
+            <ProcessChart processes={scheduleResult} />
+          </div>
+        )}
       </div>
     </div>
   );
