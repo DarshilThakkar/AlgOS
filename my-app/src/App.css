@@ -4,84 +4,96 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  transition: background-color 0.3s ease;
+  background-color: #f0f0f0; /* Light background color */
 }
 
 .content {
   text-align: center;
   width: 100%;
   max-width: 900px;
-  max-height: auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background-color: #fff;
-  transition: color 0.3s ease;
-}
-
-.dark-mode {
-  background-color: #222;
+  color: #333;
 }
 
 .dark-mode .content {
-  color: #333; /* Set text color to white in dark mode */
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-mode .content h1 {
+  color: #fff;
 }
 
 h1 {
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 36px;
+  color: #333;
 }
 
 .input-section {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .input-section input[type="text"] {
-  width: 100px;
-  padding: 8px;
-  margin-right: 10px;
-  border-radius: 5px;
+  width: 150px;
+  padding: 12px;
+  margin-right: 20px;
+  border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 .input-section button {
-  padding: 8px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
-  background-color: #007bff;
+  border-radius: 10px;
+  background-color: #4caf50;
   color: #fff;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.input-section button:hover {
+  background-color: #45a049;
 }
 
 .dropdown-section {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .dropdown-section select,
 .dropdown-section input[type="number"] {
-  padding: 8px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 .action-buttons {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .action-buttons button {
-  padding: 8px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #007bff;
   color: #fff;
   cursor: pointer;
 }
 
+.action-buttons button:hover {
+  background-color: #0056b3;
+}
+
 .gantt-chart-section {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .dark-mode-button {

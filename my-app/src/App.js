@@ -26,10 +26,10 @@ const App = () => {
       return;
     }
 
-    const lastProcess = processes[processes.length - 1];
     const newProcess = {
       name: `P${processes.length + 1}`,
       burstTime: burstTime,
+      remainingTime: burstTime, // Added remaining time for STRF
       arrivalTime: arrivalTime,
     };
     setProcesses([...processes, newProcess]);
@@ -42,6 +42,8 @@ const App = () => {
       setScheduleResult(runSJF(processes));
     } else if (selectedAlgorithm === 'RR') {
       setScheduleResult(runRoundRobin(processes, timeQuantum));
+    } else if (selectedAlgorithm === 'STRF') {
+      setScheduleResult(runSTRF(processes));
     }
   };
 
@@ -65,23 +67,6 @@ const App = () => {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-  };
-
-  const runSchedulingAlgorithm = () => {
-    if (selectedAlgorithm === '' || processes.length === 0) {
-      alert('Please select a scheduling algorithm and add process times.');
-      return;
-    }
-
-    let result = [];
-    if (selectedAlgorithm === 'FCFS') {
-      result = runFCFS(processes);
-    } else if (selectedAlgorithm === 'SJF') {
-      result = runSJF(processes);
-    } else if (selectedAlgorithm === 'RR') {
-      result = runRoundRobin(processes, timeQuantum); 
-    }
-    setScheduleResult(result);
   };
 
   const runFCFS = (processes) => {
@@ -113,39 +98,37 @@ const App = () => {
     const remainingProcesses = processes.slice();
 
     while (remainingProcesses.length > 0) {
+      const arrivedProcesses = remainingProcesses.filter(process => process.arrivalTime <= currentTime);
 
-        const arrivedProcesses = remainingProcesses.filter(process => process.arrivalTime <= currentTime);
+      if (arrivedProcesses.length === 0) {
+        const nextArrivalTime = Math.min(...remainingProcesses.map(process => process.arrivalTime));
+        currentTime = nextArrivalTime;
+        continue;
+      }
 
-        if (arrivedProcesses.length === 0) {
-            const nextArrivalTime = Math.min(...remainingProcesses.map(process => process.arrivalTime));
-            currentTime = nextArrivalTime;
-            continue;
-        }
+      arrivedProcesses.sort((a, b) => a.burstTime - b.burstTime);
 
-        arrivedProcesses.sort((a, b) => a.burstTime - b.burstTime);
+      const shortestProcess = arrivedProcesses[0];
 
-        const shortestProcess = arrivedProcesses[0];
+      const startTime = currentTime;
+      const finishTime = startTime + shortestProcess.burstTime;
+      schedule.push({
+        name: shortestProcess.name,
+        startTime: startTime,
+        finishTime: finishTime,
+        turnaroundTime: finishTime - shortestProcess.arrivalTime,
+        waitingTime: startTime - shortestProcess.arrivalTime,
+        burstTime: shortestProcess.burstTime,
+        arrivalTime: shortestProcess.arrivalTime,
+        color: '#017BFE',
+      });
 
-        const startTime = currentTime;
-        const finishTime = startTime + shortestProcess.burstTime;
-        schedule.push({
-            name: shortestProcess.name,
-            startTime: startTime,
-            finishTime: finishTime,
-            turnaroundTime: finishTime - shortestProcess.arrivalTime,
-            waitingTime: startTime - shortestProcess.arrivalTime,
-            burstTime: shortestProcess.burstTime,
-            arrivalTime: shortestProcess.arrivalTime,
-            color: '#017BFE',
-        });
-
-        currentTime = finishTime;
-        remainingProcesses.splice(remainingProcesses.indexOf(shortestProcess), 1);
+      currentTime = finishTime;
+      remainingProcesses.splice(remainingProcesses.indexOf(shortestProcess), 1);
     }
 
     return schedule;
-};
-
+  };
 
   const runRoundRobin = (processes, quantum) => {
     const queue = processes.map((process, index) => ({ ...process }));
@@ -177,13 +160,47 @@ const App = () => {
     return schedule;
   };
 
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+  const runSTRF = (processes) => {
+    let currentTime = 0;
+    const schedule = [];
+    const remainingProcesses = processes.slice();
+
+    while (remainingProcesses.length > 0) {
+      const arrivedProcesses = remainingProcesses.filter(process => process.arrivalTime <= currentTime);
+
+      if (arrivedProcesses.length === 0) {
+        const nextArrivalTime = Math.min(...remainingProcesses.map(process => process.arrivalTime));
+        currentTime = nextArrivalTime;
+        continue;
+      }
+
+      arrivedProcesses.sort((a, b) => a.remainingTime - b.remainingTime);
+
+      const shortestProcess = arrivedProcesses[0];
+
+      const startTime = currentTime;
+      const finishTime = startTime + 1; // For STRF, each process executes for 1 unit of time
+      shortestProcess.remainingTime--;
+
+      schedule.push({
+        name: shortestProcess.name,
+        startTime: startTime,
+        finishTime: finishTime,
+        turnaroundTime: finishTime - shortestProcess.arrivalTime,
+        waitingTime: startTime - shortestProcess.arrivalTime,
+        burstTime: shortestProcess.burstTime,
+        arrivalTime: shortestProcess.arrivalTime,
+        color: '#017BFE',
+      });
+
+      currentTime = finishTime;
+
+      if (shortestProcess.remainingTime === 0) {
+        remainingProcesses.splice(remainingProcesses.indexOf(shortestProcess), 1);
+      }
     }
-    return color;
+
+    return schedule;
   };
 
   return (
@@ -194,36 +211,33 @@ const App = () => {
           <button onClick={toggleDarkMode}>{darkMode ? 'Light Mode' : 'Dark Mode'}</button>
         </div>
         <div className="dropdown-section">
-          <select onChange={handleAlgorithmSelect}>
-            <option value="">Select Scheduling Algorithm</option>
-            <option value="FCFS">First Come First Serve</option>
-            <option value="SJF">Shortest Job First</option>
-            <option value="RR">Round Robin</option>
-          </select>
-          {selectedAlgorithm === 'RR' && (
-            <input
-              type="number"
-              placeholder="Time Quantum"
-              value={timeQuantum}
-              onChange={handleTimeQuantumChange}  
-            />
-          )}
-        </div>
+        <select onChange={handleAlgorithmSelect} style={{ marginRight: '10px' }}>
+          <option value="">Select Scheduling Algorithm</option>
+          <option value="FCFS">First Come First Serve</option>
+          <option value="SJF">Shortest Job First</option>
+          <option value="RR">Round Robin</option>
+          <option value="STRF">Shortest Time Remaining First</option>
+        </select>
+        {selectedAlgorithm === 'RR' && (
+          <input
+            type="number"
+            placeholder="Time Quantum"
+            value={timeQuantum}
+            onChange={handleTimeQuantumChange}  
+          />
+        )}
+      </div>
+
         <div className="input-section">
-        <input type="text" placeholder="Enter arrival time" ref={inputArrivalRef} />
+          <input type="text" placeholder="Enter arrival time" ref={inputArrivalRef} />
           <input type="text" placeholder="Enter burst time" ref={inputBurstRef} />
           <button onClick={() => { addProcess(); handleButtonClick(); }}>Add Process</button>
         </div>
         {showSuccess && (
-            <div style={{ backgroundColor: 'green', color: 'white', padding: '10px', marginTop: '10px' }}>
-              Success! Process Added Successfully!!
+          <div style={{ backgroundColor: 'green', color: 'white', padding: '10px', marginTop: '10px' }}>
+            Success! Process Added Successfully!!
           </div>
-      )}
-      {showSuccess && (
-            <div>
-              <br></br>
-          </div>
-      )}
+        )}
         {scheduleResult.length > 0 && (
           <div className="table-section">
             <h2>Process Details</h2>
@@ -251,6 +265,11 @@ const App = () => {
                     <td>{process.waitingTime}</td>
                   </tr>
                 ))}
+                <tr>
+                  <td colSpan={5}><b>Average</b></td>
+                  <td><b>{calculateAverage(scheduleResult, 'turnaroundTime')}</b></td>
+                  <td><b>{calculateAverage(scheduleResult, 'waitingTime')}</b></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -264,3 +283,9 @@ const App = () => {
 };
 
 export default App;
+
+// Helper function to calculate average
+const calculateAverage = (schedule, property) => {
+  const sum = schedule.reduce((acc, curr) => acc + curr[property], 0);
+  return (sum / schedule.length).toFixed(2);
+};
