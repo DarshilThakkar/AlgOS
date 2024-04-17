@@ -4,8 +4,11 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f0f0; /* Light background color */
+  transition: background-color 0.3s ease; /* Add white border */
+  border-radius: 10px; /* Optional: Add border radius */
+  background-color: #09090B;;
 }
+
 
 .content {
   text-align: center;
@@ -13,13 +16,14 @@
   max-width: 900px;
   padding: 40px;
   border-radius: 20px;
+  border: 2px solid #fff;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background-color: #fff;
-  color: #333;
+  color: #09090B;
 }
 
 .dark-mode .content {
-  background-color: #333;
+  background-color: #09090B;
   color: #fff;
 }
 
