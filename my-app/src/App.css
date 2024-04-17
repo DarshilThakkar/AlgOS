@@ -110,4 +110,20 @@ h1 {
   height: 24px;
 }
 
+.table-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-section th,
+.table-section td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.table-section th {
+  background-color: #007bff;
+  color: #fff;
+}
 /* Add more styles as needed */

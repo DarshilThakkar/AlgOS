@@ -20,19 +20,25 @@ const App = () => {
   const addProcess = () => {
     const burstTime = parseInt(inputBurstRef.current.value);
     const arrivalTime = parseInt(inputArrivalRef.current.value);
-
+  
     if (isNaN(burstTime) || burstTime <= 0 || isNaN(arrivalTime) || arrivalTime < 0) {
       alert('Please enter valid burst and arrival times.');
       return;
     }
-
+  
     const newProcess = {
       name: `P${processes.length + 1}`,
       burstTime: burstTime,
       remainingTime: burstTime, // Added remaining time for STRF
       arrivalTime: arrivalTime,
     };
-    setProcesses([...processes, newProcess]);
+  
+    // Update the entire table data by combining the new process with the existing processes
+    const updatedProcesses = [...processes, newProcess];
+  
+    // Update the state to trigger re-rendering and running the algorithm again
+    setProcesses(updatedProcesses);
+    updateTable(updatedProcesses); // Run the algorithm with the updated table data
   };
 
   const updateTable = (processes) => {
