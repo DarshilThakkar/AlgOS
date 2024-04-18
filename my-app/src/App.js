@@ -15,43 +15,47 @@ const App = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   
   useEffect(() => {
-    updateTable(processes);
+    if (processes.length > 0 && selectedAlgorithm) {
+      updateTable(processes);
+    }
   }, [processes, selectedAlgorithm, timeQuantum]);
 
   const addProcess = () => {
     const burstTime = parseInt(inputBurstRef.current.value);
     const arrivalTime = parseInt(inputArrivalRef.current.value);
-  
+
     if (isNaN(burstTime) || burstTime <= 0 || isNaN(arrivalTime) || arrivalTime < 0) {
       alert('Please enter valid burst and arrival times.');
       return;
     }
-  
+
     const newProcess = {
       name: `P${processes.length + 1}`,
       burstTime: burstTime,
       remainingTime: burstTime, // Added remaining time for STRF
       arrivalTime: arrivalTime,
     };
-  
-    // Update the entire table data by combining the new process with the existing processes
-    const updatedProcesses = [...processes, newProcess];
-  
+
+    // Insert the new process into the processes array based on arrival time
+    const updatedProcesses = [...processes, newProcess].sort((a, b) => a.arrivalTime - b.arrivalTime);
+
     // Update the state to trigger re-rendering and running the algorithm again
     setProcesses(updatedProcesses);
-    updateTable(updatedProcesses); // Run the algorithm with the updated table data
+    setShowSuccess(true);
   };
 
   const updateTable = (processes) => {
+    let newSchedule = [];
     if (selectedAlgorithm === 'FCFS') {
-      setScheduleResult(runFCFS(processes));
+      newSchedule = runFCFS(processes);
     } else if (selectedAlgorithm === 'SJF') {
-      setScheduleResult(runSJF(processes));
+      newSchedule = runSJF(processes);
     } else if (selectedAlgorithm === 'RR') {
-      setScheduleResult(runRoundRobin(processes, timeQuantum));
+      newSchedule = runRoundRobin(processes, timeQuantum);
     } else if (selectedAlgorithm === 'STRF') {
-      setScheduleResult(runSTRF(processes));
+      newSchedule = runSTRF(processes);
     }
+    setScheduleResult(newSchedule);
   };
 
   const handleAlgorithmSelect = (e) => {
@@ -60,16 +64,6 @@ const App = () => {
 
   const handleTimeQuantumChange = (e) => {
     setTimeQuantum(parseInt(e.target.value));
-  };
-
-  const handleButtonClick = () => {
-    setTimeout(() => {
-      setShowSuccess(true);
-      // Hide the success message after a certain period
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000); // 3000 milliseconds = 3 seconds
-    }, 100); // 1000 milliseconds = 1 second
   };
 
   const toggleDarkMode = () => {
@@ -218,27 +212,27 @@ const App = () => {
           <button onClick={toggleDarkMode}>{darkMode ? 'Light Mode' : 'Dark Mode'}</button>
         </div>
         <div className="dropdown-section">
-        <select onChange={handleAlgorithmSelect} style={{ marginRight: '10px' }}>
-          <option value="">Select Scheduling Algorithm</option>
-          <option value="FCFS">First Come First Serve</option>
-          <option value="SJF">Shortest Job First</option>
-          <option value="RR">Round Robin</option>
-          <option value="STRF">Shortest Time Remaining First</option>
-        </select>
-        {selectedAlgorithm === 'RR' && (
-          <input
-            type="number"
-            placeholder="Time Quantum"
-            value={timeQuantum}
-            onChange={handleTimeQuantumChange}  
-          />
-        )}
-      </div>
+          <select onChange={handleAlgorithmSelect} style={{ marginRight: '10px' }}>
+            <option value="">Select Scheduling Algorithm</option>
+            <option value="FCFS">First Come First Serve</option>
+            <option value="SJF">Shortest Job First</option>
+            <option value="RR">Round Robin</option>
+            <option value="STRF">Shortest Time Remaining First</option>
+          </select>
+          {selectedAlgorithm === 'RR' && (
+            <input
+              type="number"
+              placeholder="Time Quantum"
+              value={timeQuantum}
+              onChange={handleTimeQuantumChange}  
+            />
+          )}
+        </div>
 
         <div className="input-section">
           <input type="text" placeholder="Enter arrival time" ref={inputArrivalRef} />
           <input type="text" placeholder="Enter burst time" ref={inputBurstRef} />
-          <button onClick={() => { addProcess(); handleButtonClick(); }}>Add Process</button>
+          <button onClick={() => { addProcess(); }}>Add Process</button>
         </div>
         {showSuccess && (
           <div style={{ backgroundColor: 'green', color: 'white', padding: '10px', marginTop: '10px' }}>
